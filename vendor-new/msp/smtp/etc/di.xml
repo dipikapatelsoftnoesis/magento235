@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright © MageSpecialist - Skeeller srl. All rights reserved.
+  ~ See COPYING.txt for license details.
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Magento\Framework\Mail\TransportInterface" type="MSP\SMTP\Mail\Transport" />
+
+    <virtualType name="MSP\SMTP\Virtual\Logger" type="\Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">MSP::SMTP</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">MSP\SMTP\Log\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MSP\SMTP\Virtual\Mailer" type="\PHPMailer\PHPMailer\PHPMailer">
+        <arguments>
+            <argument name="exceptions" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="MSP\SMTP\Mail\Transport">
+        <arguments>
+            <argument name="logger" xsi:type="object">MSP\SMTP\Virtual\Logger</argument>
+            <argument name="mailer" xsi:type="object">MSP\SMTP\Virtual\Mailer</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Config\Model\Config\TypePool">
+        <arguments>
+            <argument name="sensitive" xsi:type="array">
+                <item name="system/msp_smtp/password" xsi:type="string">1</item>
+                <item name="system/msp_smtp/username" xsi:type="string">1</item>
+            </argument>
+            <argument name="environment" xsi:type="array">
+                <item name="system/msp_smtp/host" xsi:type="string">1</item>
+                <item name="system/msp_smtp/port" xsi:type="string">1</item>
+                <item name="system/msp_smtp/auth" xsi:type="string">1</item>
+                <item name="system/msp_smtp/secure" xsi:type="string">1</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
